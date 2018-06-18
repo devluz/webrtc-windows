@@ -214,6 +214,8 @@ namespace Org {
 					[this](Concurrency::task_completion_event
 						<webrtc::SessionDescriptionInterface*> tce) {
 				webrtc::PeerConnectionInterface::RTCOfferAnswerOptions options;
+				options.offer_to_receive_video = webrtc::PeerConnectionInterface::RTCOfferAnswerOptions::kOfferToReceiveMediaTrue;
+				options.offer_to_receive_audio = webrtc::PeerConnectionInterface::RTCOfferAnswerOptions::kOfferToReceiveMediaTrue;
 
 				rtc::CritScope lock(&_critSect);
 				if (_impl == nullptr) {
