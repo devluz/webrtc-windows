@@ -51,10 +51,10 @@ char *winuwpGetEnv(
    const char *varname   
 );
 
-inline char *getenv(const char *varname)
-{
-	return winuwpGetEnv(varname);
-}
+//inline char *getenv(const char *varname)
+//{
+//	return winuwpGetEnv(varname);
+//}
 
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
@@ -67,14 +67,14 @@ errno_t winuwpDupEnv(
    const char *varname  
 );  
 
-inline errno_t _dupenv_s(  
-   char **buffer,  
-   size_t *numberOfElements,  
-   const char *varname  
-)
-{
-  return winuwpDupEnv(buffer, numberOfElements, varname);
-}
+//inline errno_t _dupenv_s(  
+//   char **buffer,  
+//   size_t *numberOfElements,  
+//   const char *varname  
+//)
+//{
+//  return winuwpDupEnv(buffer, numberOfElements, varname);
+//}
 
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
@@ -83,15 +83,15 @@ inline errno_t _dupenv_s(
 int winuwpPutEvnA(const char *envstring);
 int winuwpPutEvnW(const wchar_t *envstring);
 
-inline int _putenv(const char *envstring)
-{
-  return winuwpPutEvnA(envstring);
-}
-
-inline int _wputenv(const wchar_t *envstring)
-{
-  return winuwpPutEvnW(envstring);
-}
+//inline int _putenv(const char *envstring)
+//{
+//  return winuwpPutEvnA(envstring);
+//}
+//
+//inline int _wputenv(const wchar_t *envstring)
+//{
+//  return winuwpPutEvnW(envstring);
+//}
 
 /* ------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------- */
