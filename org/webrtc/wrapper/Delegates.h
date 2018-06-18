@@ -26,6 +26,12 @@ namespace Org {
 			const Platform::Array<uint8>^, uint32,
 			const Platform::Array<uint8>^, uint32);
 
+
+		/// <summary>
+		/// Delegate triggered if a new frame is available from AnyVideoSource
+		/// </summary>
+		public delegate void AnyVideoSourceDelegate();
+
 		/// <summary>
 		/// Delegate for receiving video frames from EncodedVideoSource.
 		/// </summary>

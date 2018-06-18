@@ -319,6 +319,64 @@ namespace Org {
 			_track->UnsetRenderer(_videoStream.get());
 		}
 
+		// = AnyVideoStream =============================================================
+		AnyVideoStream::AnyVideoStream(AnyVideoSource ^ videoSource)
+			: _videoSource(videoSource)
+		{
+		}
+		void AnyVideoStream::RenderFrame(const webrtc::VideoFrame* frame)
+		{
+			_videoSource->OnFrame(frame->video_frame_buffer(), 
+				frame->width(), frame->height(), frame->rotation());
+		}
+
+		// = AnyVideoSource =============================================================
+		AnyVideoSource::AnyVideoSource(MediaVideoTrack^ track)
+			: _videoStream(new AnyVideoStream(this)), _track(track), _buffer(nullptr),
+			_width(0), _height(0), _rotation(webrtc::VideoRotation::kVideoRotation_0)
+		{
+			_track->SetRenderer(_videoStream.get());
+
+		}
+		void AnyVideoSource::OnFrame(rtc::scoped_refptr<webrtc::VideoFrameBuffer> buffer,
+			int width, int height, webrtc::VideoRotation rotation)
+		{
+			_buffer = buffer->ToI420();
+			_width = width;
+			_height = height;
+			_rotation = rotation;
+			OnVideoFrame();
+		}
+
+
+		size_t AnyVideoSource::GetAbgrSize()
+		{
+			//we use actually kARGB but they forgot the format in calc buffer size
+			return webrtc::CalcBufferSize(webrtc::VideoType::kARGB, _width, _height);
+		}
+
+		void AnyVideoSource::ToAbgr(Platform::WriteOnlyArray<uint8>^ buffer)
+		{
+			size_t sizeNeeded = GetAbgrSize();
+			if (_buffer != nullptr && buffer->Length >= sizeNeeded)
+			{
+				uint8* dst = buffer->Data;
+
+				webrtc::VideoFrame frame(_buffer, 0, 0, _rotation);
+				webrtc::ConvertFromI420(frame, webrtc::VideoType::kABGR, 0, dst);
+			}
+		}
+
+		void AnyVideoSource::ReleaseFrame()
+		{
+			_buffer = nullptr;
+		}
+
+		AnyVideoSource::~AnyVideoSource()
+		{
+			_track->UnsetRenderer(_videoStream.get());
+		}
+
 		// = EncodedVideoStream =============================================================
 
 		EncodedVideoStream::EncodedVideoStream(EncodedVideoSource^ videoSource) :
@@ -588,6 +646,9 @@ namespace Org {
 
 		RawVideoSource^ Media::CreateRawVideoSource(MediaVideoTrack^ track) {
 			return ref new RawVideoSource(track);
+		}
+		AnyVideoSource^ Media::CreateAnyVideoSource(MediaVideoTrack^ track) {
+			return ref new AnyVideoSource(track);
 		}
 
 		EncodedVideoSource^ Media::CreateEncodedVideoSource(MediaVideoTrack^ track) {

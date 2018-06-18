@@ -441,7 +441,8 @@ namespace Org {
 				}
 			private:
 				RawVideoSource^ _videoSource;
-		};
+		};		
+		
 
 		/// <summary>
 		/// Source of raw video samples.
@@ -462,6 +463,46 @@ namespace Org {
 			private:
 				std::unique_ptr<RawVideoStream> _videoStream;
 				MediaVideoTrack^ _track;
+		};
+
+		ref class AnyVideoSource;
+		/// <summary>
+		/// Video stream supporting many formats
+		/// </summary>
+		class AnyVideoStream : public rtc::VideoSinkInterface<webrtc::VideoFrame> {
+		public:
+			AnyVideoStream(AnyVideoSource^ videoSource);
+			virtual void RenderFrame(const webrtc::VideoFrame* frame);
+			void OnFrame(const webrtc::VideoFrame& frame) override {
+				RenderFrame(&frame);
+			}
+		private:
+			AnyVideoSource ^ _videoSource;
+		};
+		/// <summary>
+		/// Source of raw video samples.
+		/// </summary>
+		public ref class AnyVideoSource sealed {
+		internal:
+			AnyVideoSource(MediaVideoTrack^ track);
+			void OnFrame(rtc::scoped_refptr<webrtc::VideoFrameBuffer> buffer,
+				int width, int height, webrtc::VideoRotation rotation);
+		public:
+			/// <summary>
+			/// A video frame has been received.
+			/// </summary>
+			event AnyVideoSourceDelegate^ OnVideoFrame;
+			size_t GetAbgrSize();
+			void ToAbgr(Platform::WriteOnlyArray<uint8>^ buffer);
+			void ReleaseFrame();
+			virtual ~AnyVideoSource();
+		private:
+			std::unique_ptr<AnyVideoStream> _videoStream;
+			MediaVideoTrack^ _track; 
+			rtc::scoped_refptr<webrtc::I420BufferInterface> _buffer;
+			int _width;
+			int _height;
+			webrtc::VideoRotation _rotation;
 		};
 
 		ref class EncodedVideoSource;
@@ -588,6 +629,14 @@ namespace Org {
 			/// from</param>
 			/// <returns>Raw video source.</returns>
 			RawVideoSource^ CreateRawVideoSource(MediaVideoTrack^ track);
+
+			/// <summary>
+			/// Creates an <see cref="AnyVideoSource"/> for a video track.
+			/// </summary>
+			/// <param name="track">Video track to create a <see cref="AnyVideoSource"/>
+			/// from</param>
+			/// <returns>Raw video source.</returns>
+			AnyVideoSource^ Media::CreateAnyVideoSource(MediaVideoTrack^ track);
 
 			/// <summary>
 			/// Creates an <see cref="EncodedVideoSource"/> for a video track.
