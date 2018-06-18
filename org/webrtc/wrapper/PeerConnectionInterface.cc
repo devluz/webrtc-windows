@@ -414,7 +414,7 @@ namespace Org {
 				FromCx(label), init != nullptr ? &nativeInit : nullptr);
 			auto ret = ref new RTCDataChannel(channel);
 
-			auto observer = new Org::WebRtc::Internal::DataChannelObserver(ret);
+			auto observer = new Org::WebRtc::Internal::DataChannelObserver(ret, false);
 			// The callback is kept for the lifetime of the RTCPeerConnection.
 			_dataChannelObservers.push_back(observer);
 			channel->RegisterObserver(observer);

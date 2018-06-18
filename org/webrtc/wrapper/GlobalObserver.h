@@ -127,7 +127,7 @@ namespace Org {
 			// There is one of those per call to CreateDataChannel().
 			class DataChannelObserver : public webrtc::DataChannelObserver {
 			public:
-				explicit DataChannelObserver(Org::WebRtc::RTCDataChannel^ channel);
+				explicit DataChannelObserver(Org::WebRtc::RTCDataChannel^ channel, bool isRemote);
 
 				// DataChannelObserver implementation
 				virtual void OnStateChange();
@@ -135,6 +135,7 @@ namespace Org {
 
 			private:
 				Org::WebRtc::RTCDataChannel^ _channel;
+				bool _isRemote;
 			};
 		}
 	}

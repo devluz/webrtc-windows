@@ -175,7 +175,7 @@ namespace Org {
 				evt->Channel = ref new Org::WebRtc::RTCDataChannel(data_channel);
 				// This observer is deleted when the channel closes.
 				// See DataChannelObserver::OnStateChange().
-				data_channel->RegisterObserver(new DataChannelObserver(evt->Channel));
+				data_channel->RegisterObserver(new DataChannelObserver(evt->Channel, true));
 				POST_PC_EVENT(OnDataChannel, evt);
 			}
 
@@ -295,8 +295,8 @@ namespace Org {
 			//============================================================================
 
 			DataChannelObserver::DataChannelObserver(
-				Org::WebRtc::RTCDataChannel^ channel)
-				: _channel(channel) {
+				Org::WebRtc::RTCDataChannel^ channel, bool isRemote)
+				: _channel(channel), _isRemote(isRemote) {
 			}
 
 			void DataChannelObserver::OnStateChange() {
@@ -321,12 +321,22 @@ namespace Org {
 							Windows::UI::Core::CoreDispatcherPriority::Normal,
 							ref new Windows::UI::Core::DispatchedHandler([this] {
 							_channel->OnClose();
-							delete this;
+							//only delete remote data channels
+							//locals will be deleted with RTCPeerConnection
+							if (_isRemote)
+							{
+								delete this;
+							}
 						}));
 					}
 					else {
 						_channel->OnClose();
-						delete this;
+						//only delete remote data channels
+						//locals will be deleted with RTCPeerConnection
+						if (_isRemote)
+						{
+							delete this;
+						}
 					}
 					break;
 				}
