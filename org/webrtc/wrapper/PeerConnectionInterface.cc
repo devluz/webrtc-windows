@@ -228,7 +228,7 @@ namespace Org {
 				// The callback is kept for the lifetime of the RTCPeerConnection.
 				_createSdpObservers.push_back(observer);
 
-				_impl->CreateOffer(observer, nullptr);
+				_impl->CreateOffer(observer, options);
 			}, [](webrtc::SessionDescriptionInterface* sdi) {
 				RTCSessionDescription^ ret = nullptr;
 				ToCx(sdi, &ret);

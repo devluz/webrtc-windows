@@ -493,6 +493,9 @@ namespace Org {
 			/// </summary>
 			event AnyVideoSourceDelegate^ OnVideoFrame;
 			size_t GetAbgrSize();
+			int GetWidth();
+			int GetHeight();
+			int GetRotation();
 			void ToAbgr(Platform::WriteOnlyArray<uint8>^ buffer);
 			void ReleaseFrame();
 			virtual ~AnyVideoSource();

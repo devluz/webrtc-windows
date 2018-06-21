@@ -355,6 +355,21 @@ namespace Org {
 			return webrtc::CalcBufferSize(webrtc::VideoType::kARGB, _width, _height);
 		}
 
+		int AnyVideoSource::GetWidth()
+		{
+			return _width;
+		}
+
+		int AnyVideoSource::GetHeight()
+		{
+			return _height;
+		}
+
+		int AnyVideoSource::GetRotation()
+		{
+			return _rotation;
+		}
+
 		void AnyVideoSource::ToAbgr(Platform::WriteOnlyArray<uint8>^ buffer)
 		{
 			size_t sizeNeeded = GetAbgrSize();
