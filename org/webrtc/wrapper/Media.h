@@ -148,6 +148,14 @@ namespace Org {
 			/// Get and sets the availibility of the media.
 			/// </summary>
 			virtual property bool Enabled { bool get(); void set(bool value); }
+
+			/// <summary>
+			/// WRTC: hacky attempt to change the volume of the audio source.
+			/// (might access webrtc internals from a thread that isn't suppose to do
+			/// that)
+			/// </summary>
+			void SetVolume(double volume);
+
 			/// <summary>
 			/// Stops the media and releases associated resources.
 			/// </summary>

@@ -142,9 +142,23 @@ namespace Org {
 			_impl->set_enabled(value);
 		}
 
+		//WRTC: hacky method added to allow changing the volume from C#
+		void MediaAudioTrack::SetVolume(double volume) {
+			if (_impl == nullptr)
+				THROW_WEBRTC_NULL_REFERENCE_EXCEPTION("Invalid audio track object");
+			//unclear if this thread is allowed to access this
+			auto source = _impl->GetSource();
+			if (source != nullptr)
+			{
+				source->SetVolume(volume);
+			}
+		}
+
 		void MediaAudioTrack::Stop() {
 			_impl = nullptr;
 		}
+
+		
 
 		// = MediaStream =============================================================
 
