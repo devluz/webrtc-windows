@@ -401,9 +401,18 @@ namespace Org {
 			_buffer = nullptr;
 		}
 
+		void AnyVideoSource::UnregisterCallback()
+		{
+			if (_track != nullptr)
+			{
+				_track->UnsetRenderer(_videoStream.get());
+				_track = nullptr;
+			}
+		}
+
 		AnyVideoSource::~AnyVideoSource()
 		{
-			_track->UnsetRenderer(_videoStream.get());
+			UnregisterCallback();
 		}
 
 		// = EncodedVideoStream =============================================================

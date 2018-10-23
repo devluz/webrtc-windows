@@ -506,6 +506,7 @@ namespace Org {
 			int GetRotation();
 			void ToAbgr(Platform::WriteOnlyArray<uint8>^ buffer);
 			void ReleaseFrame();
+			void UnregisterCallback();
 			virtual ~AnyVideoSource();
 		private:
 			std::unique_ptr<AnyVideoStream> _videoStream;
